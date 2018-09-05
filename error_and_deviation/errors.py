@@ -88,16 +88,16 @@ def errors(form, list1, list2, outlim=0):
             And the true vales are
             y = [1.62, 4.10, 10.81, 6.28, 8.10, 9.50, 3.47]
 
-            The MAE is 
+            The MAE is 0.104285714285714
 
             Then I do the same thing but convert to mm first
 
-            The MAE is 
+            The MAE is 104.285714285714
 
-            But if I use MAPE, I should get the same value for both errors 
+            But if I use MAPE, I get the same value for both errors (1.828204390849)
             since the hard difference is taken as a percentage of the true measurement.
-            Therefore if I use MAPE, I don't need to know what scale I'm working with.
-            (Though maybe I should anway.)
+            Therefore if I use MAPE, I don't need to know what scale I'm working with, 
+            at least for this purpose.
             """
 
             
