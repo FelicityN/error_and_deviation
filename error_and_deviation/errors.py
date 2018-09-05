@@ -13,7 +13,7 @@ but if you find this useful, then I am happy to oblige.
 def print_outlim(val1, val2):
     """ Helper for printing outliers
     """
-    print("Outlier found:  {} - {} = {}".format(val1, val2, abs(val1 - val2)))
+    print("Outlier found:  |{} - {}| = {}".format(val1, val2, abs(val1 - val2)))
     print("Outlier has been excluded from calculations")
 
 def zero_chk(list1):
@@ -32,101 +32,109 @@ def float_chk(list1):
         list1[i] = float(j)
     return list1
 
-def errors(err, list1, list2, outlim=None):
+def errors(form, list1, list2, outlim=0):
+    """Function for calculating error between two data lists. Lists must be of same length and 
+       the elements of the first list corresponding to the elements of the second.
+       Args:
+         form (string): Mathematical formula for calculating error.
+                        Availiable formulas are either 'mae', 'mape', 'mse', or 'rmse'
+         list1 (list of floats): The "true" values
+         list2 (list of floats): The "observed" values
+         outlim (float): default 0 equivalent to None. If the difference between two elements 
+                         is greater than the outlier limit, print exception and exclude from 
+                         error calculation.  
+       Returns:
+         err (int): The computed error.
+    """
     import numpy as np
     
-    zero_chk(list1)
     list1 = float_chk(list1)
 
     outlim_count = 0
     error = 0
     N = len(list1)
     
-
     for i in range(0, N):
-        """ Mean Absolute Error
-
-        Sum(|y-y'|)/N
-
-        The simpliest way to decide the error between measurements is to take the difference.
-        Say you measure a mile and it was 4 inch off of a true mile. The 4 inch is your error.
-        Whether this error is + or - often doesn't matter and can complicate analysis,
-        so we take the absolute value. 
-        That is the error between two values. If we have two lists and we want a single value
-        to represent the error of all data, we can average them 
-        (sum and divide by the total number of errors or data point comparisons).
-
-        Args:
-           list1 (list of floats) The "true" values
-           list2 (list of floats) The "observed" values
-           outlim (float): default None. If the difference between two elements 
-             is greater than the outlier limit, print exception and exclude from error calculation. 
-        """    
-        if err =='mae':
+        if form == 'mae':
             err = abs(list1[i]-list2[i])
-        
+            """ Mean Absolute Error (MAE)
 
-        """ Mean Absolute Percent Error
+            Sum(|y-y'|)/N
 
-        Sum(|y-y'|/y)/N*100
+            The simpliest way to decide the error between measurements is to take the difference.
+            Say you measure a mile and it was 4 inch off of a true mile. The 4 inch is your error.
+            Whether this error is + or - often doesn't matter and can complicate analysis,
+            so we take the absolute value. 
+            That is the error between two values. If we have two lists and we want a single value
+            to represent the error of all data, we can average them 
+            (sum and divide by the total number of errors or data point comparisons).
+            """
 
-        We are looking at a percent on the original or true y value,
-        rather than a value of the differences of the measurement (MAE),
-        which can be meaningless to the user unless they understand the scale of their data.
-
-        For example,
-        say I measure the size of giant bacteria in cm I get
-        y' = [1.59, 4.37, 10.95, 6.27, 8.04, 9.29, 3.48]
-        And the true vales are
-        y = [1.62, 4.10, 10.81, 6.28, 8.10, 9.50, 3.47]
-
-        The MAE is 
-
-        Then I do the same thing but convert to mm first
-
-        The MAE is 
-
-        But if I use MAPE, I should get the same value for both errors 
-        since the hard difference is taken as a percentage of the true measurement.
-        Therefore if I use MAPE, I don't need to know what scale I'm working with.
-        (Though maybe I should anway.)
-        """
-        elif err == 'mape':
+            
+        elif form  == 'mape':
+            zero_chk(list1)    
             err = abs(list1[i]-list2[i])/list1[i]
-        
+            """ Mean Absolute Percent Error (MAPE)
 
-        """ Mean Squared error
+            Sum(|y-y'|/y)/N*100
 
-        Sum((y - y')^2)/N
+            We are looking at a percent on the original or true y value,
+            rather than a value of the differences of the measurement (MAE),
+            which can be meaningless to the user unless they understand the scale of their data.
 
-        Another way of removing the negative from errors is to square them. 
-        This will convert everything to positive values without having to take the
-        absolute value.
-        
-        --------
+            For example,
+            say I measure the size of giant bacteria in cm I get
+            y' = [1.59, 4.37, 10.95, 6.27, 8.04, 9.29, 3.48]
+            And the true vales are
+            y = [1.62, 4.10, 10.81, 6.28, 8.10, 9.50, 3.47]
 
-        Root Mean Squared Error
+            The MAE is 
 
-        Sqrt(Sum((y - y')^2)/N)
+            Then I do the same thing but convert to mm first
 
-        Warning: outliers will dramatically increase the error for MSE and RMSE. 
-        Suggest specifying an outlim (outlier limit) value.
-        """
-        elif err == 'mse' or err == 'rmse':
+            The MAE is 
+
+            But if I use MAPE, I should get the same value for both errors 
+            since the hard difference is taken as a percentage of the true measurement.
+            Therefore if I use MAPE, I don't need to know what scale I'm working with.
+            (Though maybe I should anway.)
+            """
+
+            
+        elif form == 'mse' or form == 'rmse':
             err = (list1[i] - list2[i])**2
-        
+            """ Mean Squared Error (MSE)
+
+            Sum((y - y')^2)/N
+
+            Another way of removing the negative from errors is to square them. 
+            This will convert everything to positive values without having to take the
+            absolute value.
+
+            --------
+
+            Root Mean Squared Error (RMSE)
+
+            Sqrt(Sum((y - y')^2)/N)
+
+            Warning: outliers will dramatically increase the error for MSE and RMSE. 
+            Suggest specifying an outlim (outlier limit) value.
+            """
+
+            
         else:
-            print("err should be 'mae', 'mape', 'mse', or 'rmse'")
+            print("form should be 'mae', 'mape', 'mse', or 'rmse'")
         
-        if outlim != None and err > outlim:
+        if outlim != 0 and err > outlim:
             print_outlim(list1[i], list2[i])
             outlim_count += 1
-        error += err
+        else:
+            error += err
 
-    error /= N        
-    if err == mae:
+    error /= (N - outlim_count)        
+    if form == 'mape':
         error *= 100
-    elif err == rmse:
+    elif form == 'rmse':
         error = np.sqrt(error)
         
     
