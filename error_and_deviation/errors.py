@@ -5,7 +5,7 @@ This script contains...
 Functions for calculating error and deviation between two or one data lists.
     All expressions use the standard Python library only, except rmse which also uses numpy.
 Documentation attempting to illuminate the reasoning behind the math.
-Standard Deviation can be calculated specifying form='rmse' and list2=None
+Standard Deviation can be calculated specifying form='rmse' and list2 == None
 
 Written by Felicty Nielson, mostly for my own intituion, 
 but if you find this useful, then I am happy to oblige.
@@ -44,7 +44,7 @@ def mean_list(list1, N):
     lista = [ave for x in range(0,N)]
     return lista
 
-def errors(form, deviation=False, list1, list2=None, outlim=0):
+def errors(form, list1, list2=None, deviation=False, outlim=0):
     """ Function for calculating error and deviation between two or one data lists. 
         Lists must be of same length and the elements of the first list corresponding 
         to the elements of the second.
@@ -77,9 +77,9 @@ def errors(form, deviation=False, list1, list2=None, outlim=0):
         print("Calculating error...")
     else:
         print("Calculating deviation...")
-        if list2=None:
+        if list2 == None:
             list2 = mean_list(list1, N)
-        elif deviation = True:
+        elif deviation == True:
             list1 = mean_list(list1, N)
     
     for i in range(0, N):
@@ -162,7 +162,7 @@ def errors(form, deviation=False, list1, list2=None, outlim=0):
         else:
             print("form should be 'mae', 'mape', 'mse', or 'rmse'")
         
-        if outlim != 0 and err > outlim:
+        if outlim != 0 and abs(list1[i]-list2[i]) > outlim:
             print_outlim(list1[i], list2[i])
             outlim_count += 1
         else:
